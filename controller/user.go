@@ -2,7 +2,7 @@ package controller
 
 import (
 	"docker_sample/database"
-	"docker_sample/schema"
+	"docker_sample/model"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
