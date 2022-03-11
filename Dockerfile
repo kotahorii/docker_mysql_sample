@@ -1,6 +1,6 @@
-FROM golang:1.15.2-alpine
+FROM golang:1.17.8-buster
 
-RUN apk update && apk add git
+RUN apt-get update && apt-get install git
 
 WORKDIR /go/src/app
 
