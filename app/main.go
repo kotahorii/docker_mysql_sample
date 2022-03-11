@@ -2,7 +2,9 @@ package main
 
 import (
 	"docker_sample/database"
-	"fmt"
+	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type User struct {
@@ -11,16 +13,56 @@ type User struct {
 	Email string `json:"email"`
 }
 
-func main() {
-	db := database.Connect()
-	defer db.Close()
+func getUsers(c echo.Context) error {
+	users := []User{}
+	database.DB.Find(&users)
+	return c.JSON(http.StatusOK, users)
+}
 
-	err := db.Ping()
-
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	} else {
-		fmt.Println("データベース接続成功")
+func getUser(c echo.Context) error {
+	user := User{}
+	if err := c.Bind(&user); err != nil {
+		return err
 	}
+	database.DB.Take(&user)
+	return c.JSON(http.StatusOK, user)
+}
+
+func createUser(c echo.Context) error {
+	user := User{}
+	if err := c.Bind(&user); err != nil {
+		return err
+	}
+	database.DB.Create(&user)
+	return c.JSON(http.StatusCreated, user)
+}
+
+func updateUser(c echo.Context) error {
+	user := User{}
+	if err := c.Bind(&user); err != nil {
+		return err
+	}
+	database.DB.Save(&user)
+	return c.JSON(http.StatusOK, user)
+}
+
+func deleteUser(c echo.Context) error {
+	id := c.Param("id")
+	database.DB.Delete(&User{}, id)
+	return c.NoContent(http.StatusNoContent)
+}
+
+func main() {
+	e := echo.New()
+	database.Connect()
+	sqlDB, _ := database.DB.DB()
+	defer sqlDB.Close()
+
+	e.GET("/users", getUsers)
+	e.GET("/users/:id", getUser)
+	e.POST("/users", createUser)
+	e.PUT("/users/:id", updateUser)
+	e.DELETE("/users/:id", deleteUser)
+
+	e.Logger.Fatal(e.Start(":3000"))
 }
