@@ -6,7 +6,11 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./app:/go/src/app
+      - .:/app
+    depends_on:
+      - db
+    command: ["./start.sh"]
+    # need $ chmod +x start.sh
 
   test_mysql:
     platform: 'linux/amd64'
