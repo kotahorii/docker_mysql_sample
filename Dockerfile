@@ -1,12 +1,7 @@
-FROM golang:latest
+FROM golang:1.15.2-alpine
 
-WORKDIR /app
-COPY ./app /app/
+RUN apk update && apk add git
 
-ENV CGO_ENABLED=0 \
-  GOOS=linux \
-  GOARCH=amd64
+WORKDIR /go/src/app
 
-EXPOSE 8080
-
-CMD ["go", "run", "main.go"]
+ADD . /go/src/app

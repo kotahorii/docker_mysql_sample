@@ -1,12 +1,20 @@
 version: '3.7'
 services:
+  app:
+    build: .
+    tty: true
+    volumes:
+      - ./app:/go/src/app
+
   test_mysql:
     platform: 'linux/amd64'
     image: mysql:5.7
     container_name: mysql
     environment:
-      MYSQL_DATABASE: test
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: sample_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
       TZ: 'Asia/Tokyo'
     command:
       - --character-set-server=utf8mb4
