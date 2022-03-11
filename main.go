@@ -9,9 +9,11 @@ import (
 
 func main() {
 	e := echo.New()
+
 	database.Connect()
 	sqlDB, _ := database.DB.DB()
 	defer sqlDB.Close()
+
 	e.GET("/users", controller.GetUsers)
 	e.GET("/users/:id", controller.GetUser)
 	e.POST("/users", controller.CreateUser)
