@@ -28,4 +28,5 @@ func Connect() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+	DB.AutoMigrate()
 }
